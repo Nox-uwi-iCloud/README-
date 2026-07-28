@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 README 模板集 · 13 种形态</title>
+    <!-- 引入 marked 用于预览渲染 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        /* ===== 全局重置 & 布局 ===== */
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #f6f8fa;
+            color: #24292e;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .app {
+            max-width: 1440px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            min-height: 85vh;
+            overflow: hidden;
+        }
+        .header {
+            padding: 18px 30px;
+            background: #24292e;
+            color: #fff;
+            border-bottom: 1px solid #e1e4e8;
+        }
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .header h1 small {
+            font-weight: 400;
+            font-size: 15px;
+            color: #b0b8c4;
+            margin-left: 8px;
+        }
+        .main {
+            display: flex;
+            flex: 1;
+            flex-direction: row;
+        }
+        /* ===== 侧边栏 ===== */
+        .sidebar {
+            width: 230px;
+            background: #f6f8fa;
+            border-right: 1px solid #e1e4e8;
+            padding: 16px 0;
+            flex-shrink: 0;
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar li {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #24292e;
+            border-left: 3px solid transparent;
+            transition: all 0.15s;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sidebar li:hover { background: #e1e4e8; }
+        .sidebar li.active {
+            background: #fff;
+            border-left-color: #0366d6;
+            color: #0366d6;
+            font-weight: 600;
+        }
+        .sidebar li .icon { font-size: 18px; }
+
+        /* ===== 内容区域 ===== */
+        .content-area {
+            flex: 1;
+            padding: 24px 30px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .toolbar .left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .toolbar .left .info {
+            font-size: 14px;
+            color: #586069;
+        }
+        .toolbar .left .info strong { color: #24292e; }
+        .mode-switch {
+            display: flex;
+            border: 1px solid #d1d5da;
+            border-radius: 6px;
+            overflow: hidden;
+            font-size: 13px;
+        }
+        .mode-switch button {
+            background: #fafbfc;
+            border: none;
+            padding: 5px 16px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #586069;
+            transition: background 0.15s;
+        }
+        .mode-switch button.active {
+            background: #0366d6;
+            color: #fff;
+        }
+        .mode-switch button:first-child { border-right: 1px solid #d1d5da; }
+        .mode-switch button:hover:not(.active) { background: #f1f3f5; }
+
+        .btn-copy {
+            background: #2ea44f;
+            color: #fff;
+            border: none;
+            padding: 6px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-copy:hover { background: #22863a; }
+        .btn-copy.copied { background: #1e7e34; }
+
+        /* ===== 显示区 ===== */
+        .display-box {
+            background: #fafbfc;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 22px;
+            overflow: auto;
+            flex: 1;
+            min-height: 400px;
+        }
+        /* 源码模式 (等宽) */
+        .display-box.source {
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 14px;
+            line-height: 1.7;
+            tab-size: 2;
+            color: #24292e;
+        }
+        /* 预览模式 (普通渲染) */
+        .display-box.preview {
+            white-space: normal;
+            font-family: inherit;
+            font-size: 16px;
+            line-height: 1.8;
+            color: #24292e;
+        }
+        .display-box.preview h1, .display-box.preview h2, .display-box.preview h3 {
+            margin-top: 1.2em;
+            margin-bottom: 0.5em;
+            border-bottom: 1px solid #eaecef;
+        }
+        .display-box.preview code {
+            background: #f1f3f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        .display-box.preview pre {
+            background: #f1f3f5;
+            padding: 16px;
+            border-radius: 6px;
+            overflow: auto;
+            font-size: 14px;
+        }
+        .display-box.preview blockquote {
+            border-left: 4px solid #dfe2e5;
+            padding-left: 16px;
+            color: #6a737d;
+        }
+        .display-box.preview table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1em 0;
+        }
+        .display-box.preview table th, .display-box.preview table td {
+            border: 1px solid #dfe2e5;
+            padding: 8px 12px;
+        }
+        .display-box.preview table th { background: #f6f8fa; }
+        .empty-state {
+            color: #8b949e;
+            font-style: italic;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 768px) {
+            .main { flex-direction: column; }
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #e1e4e8;
+                max-height: 200px;
+                overflow-y: auto;
+                padding: 8px 0;
+            }
+            .sidebar ul {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .sidebar li {
+                padding: 8px 14px;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+                font-size: 13px;
+            }
+            .sidebar li.active {
+                border-bottom-color: #0366d6;
+                border-left-color: transparent;
+            }
+            .content-area { padding: 16px; max-height: none; }
+            .display-box { min-height: 300px; }
+            .toolbar { flex-direction: column; align-items: stretch; }
+            .toolbar .left { flex-wrap: wrap; }
+        }
+        /* 滚动条美化 */
+        .display-box::-webkit-scrollbar { width: 6px; height: 6px; }
+        .display-box::-webkit-scrollbar-track { background: #f1f1f1; }
+        .display-box::-webkit-scrollbar-thumb { background: #c1c7cd; border-radius: 3px; }
+        .display-box::-webkit-scrollbar-thumb:hover { background: #a0a8b0; }
+    </style>
+</head>
+<body>
+<div class="app">
+    <header class="header">
+        <h1>📚 README 模板集 <small>13 种项目形态 · 即选即用</small></h1>
+    </header>
+
+    <div class="main">
+        <!-- 侧边导航 -->
+        <nav class="sidebar">
+            <ul id="navList">
+                <li class="active" data-key="template1"><span class="icon">📄</span> 通用型</li>
+                <li data-key="template2"><span class="icon">🎨</span> HTML / 前端</li>
+                <li data-key="template3"><span class="icon">🐍</span> Python 包</li>
+                <li data-key="template4"><span class="icon">⚡</span> RESTful API</li>
+                <li data-key="template5"><span class="icon">⌨️</span> CLI 工具</li>
+                <li data-key="template6"><span class="icon">⚛️</span> React 应用</li>
+                <li data-key="template7"><span class="icon">🖖</span> Vue.js 项目</li>
+                <li data-key="template8"><span class="icon">🟢</span> Node.js 库</li>
+                <li data-key="template9"><span class="icon">🐹</span> Go 微服务</li>
+                <li data-key="template10"><span class="icon">🦀</span> Rust 工具</li>
+                <li data-key="template11"><span class="icon">📊</span> 数据科学</li>
+                <li data-key="template12"><span class="icon">🐳</span> Docker / DevOps</li>
+                <li data-key="template13"><span class="icon">📱</span> 移动应用 (Flutter)</li>
+            </ul>
+        </nav>
+
+        <!-- 内容 -->
+        <main class="content-area">
+            <div class="toolbar">
+                <div class="left">
+                    <span class="info">当前模板：<strong id="currentLabel">通用型</strong></span>
+                    <div class="mode-switch">
+                        <button id="modeSource" class="active">源码</button>
+                        <button id="modePreview">预览</button>
+                    </div>
+                </div>
+                <button class="btn-copy" id="copyBtn">📋 复制源码</button>
+            </div>
+            <div class="display-box source" id="displayArea">
+                <div class="empty-state">请从左侧选择一个模板</div>
+            </div>
+        </main>
+    </div>
+
+    <footer style="padding:12px 30px; border-top:1px solid #e1e4e8; font-size:13px; color:#586069; text-align:center; background:#fafbfc;">
+        💡 点击左侧模板切换 · 源码模式显示 Markdown 原文，预览模式渲染为 HTML · 点击复制即可拷贝全部内容
+    </footer>
+</div>
+
+<script>
+// =====================================================
+// 13 个模板的 Markdown 内容（完整示范）
+// 每个模板都包含：标题、徽章、介绍、特性、快速开始、结构、贡献等
+// 使用模板字面量，内部反引号已转义（\`）
+// =====================================================
+const TEMPLATES = {
+    template1: `# [项目名称]
+
+> [一句话简介：项目是做什么的]
+
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/[你的用户名]/[仓库名])](https://github.com/[你的用户名]/[仓库名]/stargazers)
+[![Forks](https://img.shields.io/github/forks/[你的用户名]/[仓库名])](https://github.com/[你的用户名]/[仓库名]/network/members)
+
+---
+
+## 📖 介绍
+
+在这里用 2-3 段话介绍你的项目：
+
+- 它解决了什么问题？
+- 它的核心功能是什么？
+- 它有什么特别之处？
+
+---
+
+## ✨ 特性
+
+- ✅ 特性 1
+- ✅ 特性 2
+- ✅ 特性 3
+
+---
+
+## 🚀 快速开始
+
+\`\`\`bash
+git clone https://github.com/[你的用户名]/[仓库名].git
+cd [仓库名]
+# 安装依赖
+\`\`\`
+
+---
+
+## 📁 项目结构
+
+\`\`\`
+├── src/
+├── tests/
+├── docs/
+└── README.md
+\`\`\`
+
+---
+
+## 📄 许可证
+
+[MIT](LICENSE) © [你的名字]`,
+
+    template2: `# 🎨 [项目名称]
+
+> [一句话简介：这是一个什么风格的前端项目]
+
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/xxx/deploy-status)](部署链接)
+
+![预览图](https://via.placeholder.com/800x400?text=Preview)
+
+---
+
+## 📖 介绍
+
+[项目名称] 是一个 [响应式个人博客 / 后台面板 / 创意落地页]。
+使用 HTML / CSS / JavaScript 构建，注重 [设计感 / 性能 / 可访问性]。
+
+**在线 Demo**：[点击预览](部署链接)
+
+---
+
+## ✨ 特性
+
+- 🎨 现代 UI，干净优雅
+- 📱 完全响应式
+- 🌙 明暗主题切换
+- ⚡ 轻量级，无依赖
+
+---
+
+## 🛠 技术栈
+
+| 技术 | 用途 |
+|------|------|
+| HTML5 | 结构 |
+| CSS3 / SCSS | 样式 |
+| JavaScript (ES6+) | 交互 |
+
+---
+
+## 🚀 快速开始
+
+\`\`\`bash
+git clone https://github.com/[你的用户名]/[仓库名].git
+cd [仓库名]
+# 直接用浏览器打开 index.html
+\`\`\`
+
+---
+
+## 📁 目录结构
+
+\`\`\`
+├── public/
+├── src/
+│   ├── css/
+│   ├── js/
+│   └── index.html
+└── README.md
+\`\`\`
+
+---
+
+## 📄 许可证
+
+[MIT](LICENSE) © [你的名字]`,
+
+    template3: `# 🐍 [项目名称]
+
+> [一句口号：这个 Python 包能帮你做什么]
+
+[![PyPI version](https://img.shields.io/pypi/v/[你的包名])](https://pypi.org/project/[你的包名]/)
+[![Python versions](https://img.shields.io/pypi/pyversions/[你的包名])](https://pypi.org/project/[你的包名]/)
+[![License](https://img.shields.io/github/license/[你的用户名]/[仓库名])](LICENSE)
+
+---
+
+## 📖 介绍
+
+[项目名称] 是一个 [轻量级 Web 框架 / 数据分析工具 / 自动化脚本库]，
+致力于 [项目目标]。
+
+**核心价值**：
+- 🚀 简单易用，上手快
+- ⚡ 高性能，低开销
+- 🔧 可扩展，插件化设计
+
+---
+
+## ✨ 特性
+
+- ✅ 特性 1：描述
+- ✅ 特性 2：描述
+- ✅ 特性 3：描述
+
+---
+
+## 🚀 快速安装
+
+\`\`\`bash
+pip install [你的包名]
+\`\`\`
+
+或从源码安装：
+
+\`\`\`bash
+git clone https://github.com/[你的用户名]/[仓库名].git
+cd [仓库名]
+pip install -e .
+\`\`\`
+
+---
+
+## 📖 基础用法
+
+\`\`\`python
+import [你的包名]
+result = [你的包名].do_something()
+print(result)
+\`\`\`
+
+---
+
+## 📁 项目结构
+
+\`\`\`
+├── src/[你的包名]/
+├── tests/
+├── docs/
+├── pyproject.toml
+└── README.md
+\`\`\`
+
+---
+
+## 📄 许可证
+
+[MIT](LICENSE) © [你的名字]`,
+
+    template4: `# ⚡ [项目名称] API
+
+> [一句话描述：RESTful / GraphQL API 服务]
+
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Docker](https://img.shields.io/badge/docker-ready-blue)](https://hub.docker.com/r/[你的用户名]/[仓库名])
+[![API Docs](https://img.shields.io/badge/docs-swagger-green)](API文档链接)
+
+---
+
+## 📖 介绍
+
+[项目名称] 是一个 [高性能 RESTful API 服务]，
+为 [目标用户] 提供 [核心能力]。
+
+**设计原则**：
+- 🏗 模块化、可扩展
+- 🔒 安全优先（JWT / OAuth2）
+- 📊 可观测性（日志 / 指标 / 追踪）
+
+---
+
+## ✨ 特性
+
+| 特性 | 描述 |
+|------|------|
+| ✅ RESTful | 遵循 REST 规范 |
+| ✅ 身份认证 | JWT + OAuth2 |
+| ✅ 数据库 | PostgreSQL / MySQL |
+| ✅ 缓存 | Redis |
+
+---
+
+## 🚀 快速开始 (Docker)
+
+\`\`\`bash
+docker run -d -p 8080:8080 \\
+  -e DATABASE_URL=postgresql://user:pass@host/db \\
+  [你的用户名]/[仓库名]:latest
+\`\`\`
+
+---
+
+## 📚 API 端点示例
+
+| 方法 | 端点 | 描述 |
+|------|------|------|
+| POST | \`/api/v1/auth/login\` | 登录 |
+| GET | \`/api/v1/users\` | 用户列表 |
+
+---
+
+## 📄 许可证
+
+[MIT](LICENSE) © [你的名字]`,
+
+    template5: `# ⌨️ [项目名称]
+
+> [一句口号：这个命令行工具能帮你做什么]
+
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![PyPI version](https://img.shields.io/pypi/v/[你的包名])](https://pypi.org/project/[你的包名]/)
+
+---
+
+## 📖 介绍
+
+[项目名称] 是一个 [代码生成器 / 文件处理工具 / 开发辅助]，
+通过命令行操作，帮助你 [核心价值]。
+
+---
+
+## ✨ 特性
+
+- ⚡ 快速：[描述性能优势]
+- 🔧 灵活：支持多种配置
+- 🎨 彩色输出，友好体验
+
+---
+
+## 🚀 安装
+
+\`\`\`bash
+npm install -g [你的包名]   # 或 pip install [你的包名]
+\`\`\`
+
+---
+
+## 📖 使用示例
+
+\`\`\`bash
+[你的命令名] init my-project --template=default
+[你的命令名] process input.txt --output=output.json
+\`\`\`
+
+---
+
+## 📄 许可证
+
+[MIT](LICENSE) © [你的名字]`,
+
+    template6: `# ⚛️ [项目名称]
+
+> [一句话简介：React 应用]
+
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![React](https://img.shields.io/badge/React-18.2-blue)](https://reactjs.org/)
+
+---
+
+## 📖 介绍
+
+[项目名称] 是一个基于 React 的 [单页应用 / 仪表盘 / 电商平台]，
+使用 [Redux / React Query / Tailwind] 等现代技术栈。
+
+---
+
+## ✨ 特性
+
+- ⚛️ 函数式组件 + Hooks
+- 🗂 状态管理 (Redux Toolkit)
+- 🎨 组件库 (Material-UI / Ant Design)
+- 📱 响应式设计
+
+---
+
+## 🚀 快速开始
+
+\`\`\`bash
+git clone https://github.com/[你的用户名]/[仓库名].git
+cd [仓库名]
+npm install
+npm start
+\`\`\`
+
+---
+
+## 📁 项目结构
+
+\`\`\`
+├── public/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── store/
+│   └── App.js
+└── README.md
+\`\`\`
+
+---
+
+## 📄 许可证
+
+[MIT](LICENSE) © [你的名字]`,
+
+    template7: `# 🖖 [项目名称]
+
+> [一句话简介：Vue.js 项目]
+
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Vue.js](https://img.shields.io/badge/Vue-3.x-brightgreen)](https://vuejs.org/)
+
+---
+
+## 📖 介绍
+
+基于 Vue 3 + Vite 构建的 [后台管理 / 博客 / 企业官网]，
+使用 Composition API、Vue Router、Pinia。
+
+---
+
+## ✨ 特性
+
+- 🖖 Vue 3 Composition API
+- ⚡ Vite 构建，极速热更新
+- 🗃 Pinia 状态管理
+- 🎨 Element Plus / Vant 组件库
+
+---
+
+## 🚀 快速开始
+
+\`\`\`bash
+git clone https://github.com/[你的用户名]/[仓库名].git
+cd [仓库名]
+npm install
+npm run dev
+\`\`\`
+
+---
+
+## 📁 项目结构
+
+\`\`\`
+├── public/
+├── src/
+│   ├── components/
+│   ├── views/
+│   ├── stores/
+│   └── App.vue
+└── README.md
+\`\`\`
+
+---
+
+## 📄 许可证
+
+[MIT](LICENSE) © [你的名字]`,
+
+    template8: `# 🟢 [项目名称]
+
+> [一句话简介：Node.js 库/工具]
+
+[![npm](https://img.shields.io/npm/v/[你的包名])](https://www.npmjs.com/package/[你的包名])
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+---
+
+## 📖 介绍
+
+[项目名称] 是一个 Node.js 模块，用于 [处理文件 / 构建 CLI / 开发中间件]，
+提供简单易用的 API。
+
+---
+
+## ✨ 特性
+
+- 🚀 高性能，异步非阻塞
+- 🔧 可配置，支持插件
+- 📦 轻量，零额外依赖
+
+---
+
+## 🚀 安装
+
+\`\`\`bash
+npm install [你的包名]
+\`\`\`
+
+---
+
+## 📖 使用示例
+
+\`\`\`javascript
+const myLib = require('[你的包名]');
+myLib.doSomething({ option: true });
+\`\`\`
+
+---
+
+## 📄 许可证
+
+[MIT](LICENSE) © [你的名字]`,
+
+    template9: `# 🐹 [项目名称]
+
+> [一句话简介：Go 微服务]
+
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Go](https://img.shields.io/badge/Go-1.21-blue)](https://golang.org/)
+
+---
+
+## 📖 介绍
+
+基于 Go 构建的 [微服务 / API 网关 / 后台服务]，
+使用 Gin / Echo 框架，支持 gRPC 和 HTTP/2。
+
+---
+
+## ✨ 特性
+
+- 🐹 高并发，低延迟
+- 🔒 JWT 认证与授权
+- 📊 内置 Prometheus 指标
+- 🐳 Docker 原生支持
+
+---
+
+## 🚀 快速开始
+
+\`\`\`bash
+git clone https://github.com/[你的用户名]/[仓库名].git
+cd [仓库名]
+go mod download
+go run main.go
+\`\`\`
+
+---
+
+## 📁 项目结构
+
+\`\`\`
+├── cmd/
+├── internal/
+├── pkg/
+├── api/
+└── README.md
+\`\`\`
+
+---
+
+## 📄 许可证
+
+[MIT](LICENSE) © [你的名字]`,
+
+    template10: `# 🦀 [项目名称]
+
+> [一句话简介：Rust 工具/库]
+
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Rust](https://img.shields.io/badge/Rust-stable-orange)](https://rust-lang.org/)
+
+---
+
+## 📖 介绍
+
+用 Rust 编写的 [命令行工具 / 系统库 / WebAssembly 模块]，
+追求极致性能和内存安全。
+
+---
+
+## ✨ 特性
+
+- 🦀 内存安全，零成本抽象
+- ⚡ 性能媲美 C/C++
+- 📦 丰富的 crates 生态
+
+---
+
+## 🚀 安装
+
+\`\`\`bash
+cargo install [你的包名]
+\`\`\`
+
+或从源码构建：
+
+\`\`\`bash
+git clone https://github.com/[你的用户名]/[仓库名].git
+cd [仓库名]
+cargo build --release
+\`\`\`
+
+---
+
+## 📖 使用示例
+
+\`\`\`rust
+use [你的包名]::some_function;
+fn main() {
+    let result = some_function("input");
+    println!("{}", result);
+}
+\`\`\`
+
+---
+
+## 📄 许可证
+
+[MIT](LICENSE) © [你的名字]`,
+
+    template11: `# 📊 [项目名称]
+
+> [一句话简介：数据科学 / 数据分析项目]
+
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-orange)](https://jupyter.org/)
+
+---
+
+## 📖 介绍
+
+本项目用于 [数据清洗 / 可视化 / 机器学习建模]，
+包含完整的数据处理流水线和分析报告。
+
+---
+
+## ✨ 特性
+
+- 📊 数据可视化 (Matplotlib / Seaborn)
+- 🧠 机器学习 (Scikit-learn / TensorFlow)
+- 📝 交互式 Notebook 探索
+
+---
+
+## 🚀 快速开始
+
+\`\`\`bash
+git clone https://github.com/[你的用户名]/[仓库名].git
+cd [仓库名]
+pip install -r requirements.txt
+jupyter notebook
+\`\`\`
+
+---
+
+## 📁 项目结构
+
+\`\`\`
+├── data/
+├── notebooks/
+├── src/
+├── reports/
+└── README.md
+\`\`\`
+
+---
+
+## 📄 许可证
+
+[MIT](LICENSE) © [你的名字]`,
+
+    template12: `# 🐳 [项目名称]
+
+> [一句话简介：Docker / DevOps 自动化方案]
+
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Docker](https://img.shields.io/badge/Docker-ready-blue)](https://docker.com/)
+
+---
+
+## 📖 介绍
+
+提供一套完整的容器化方案，包括 Dockerfile、docker-compose、Kubernetes 配置，
+用于 [快速部署 / 持续集成 / 开发环境标准化]。
+
+---
+
+## ✨ 特性
+
+- 🐳 多阶段构建，镜像体积小
+- 🚢 Kubernetes 清单 (Deployment, Service, Ingress)
+- 🔧 环境变量配置化
+- 📦 集成 CI/CD (GitHub Actions)
+
+---
+
+## 🚀 快速开始
+
+\`\`\`bash
+git clone https://github.com/[你的用户名]/[仓库名].git
+cd [仓库名]
+docker-compose up -d
+\`\`\`
+
+---
+
+## 📁 项目结构
+
+\`\`\`
+├── docker/
+│   ├── Dockerfile
+│   └── docker-compose.yml
+├── k8s/
+│   ├── deployment.yaml
+│   └── service.yaml
+└── README.md
+\`\`\`
+
+---
+
+## 📄 许可证
+
+[MIT](LICENSE) © [你的名字]`,
+
+    template13: `# 📱 [项目名称]
+
+> [一句话简介：Flutter 移动应用]
+
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Flutter](https://img.shields.io/badge/Flutter-3.x-blue)](https://flutter.dev/)
+
+---
+
+## 📖 介绍
+
+基于 Flutter 开发的跨平台移动应用，支持 iOS 和 Android，
+提供 [电商 / 社交 / 工具] 等功能。
+
+---
+
+## ✨ 特性
+
+- 📱 跨平台，一套代码双端运行
+- 🎨 Material Design & Cupertino 风格
+- 🔥 热重载，开发效率高
+- 🗃 状态管理 (Provider / Riverpod)
+
+---
+
+## 🚀 快速开始
+
+\`\`\`bash
+git clone https://github.com/[你的用户名]/[仓库名].git
+cd [仓库名]
+flutter pub get
+flutter run
+\`\`\`
+
+---
+
+## 📁 项目结构
+
+\`\`\`
+├── lib/
+│   ├── models/
+│   ├── screens/
+│   ├── widgets/
+│   └── main.dart
+├── assets/
+├── pubspec.yaml
+└── README.md
+\`\`\`
+
+---
+
+## 📄 许可证
+
+[MIT](LICENSE) © [你的名字]`
+};
+
+// =====================================================
+// 交互逻辑
+// =====================================================
+let currentKey = 'template1';
+let currentMode = 'source'; // 'source' 或 'preview'
+
+const navList = document.getElementById('navList');
+const displayArea = document.getElementById('displayArea');
+const currentLabel = document.getElementById('currentLabel');
+const copyBtn = document.getElementById('copyBtn');
+const modeSource = document.getElementById('modeSource');
+const modePreview = document.getElementById('modePreview');
+
+const labelMap = {
+    template1: '通用型',
+    template2: 'HTML / 前端',
+    template3: 'Python 包',
+    template4: 'RESTful API',
+    template5: 'CLI 工具',
+    template6: 'React 应用',
+    template7: 'Vue.js 项目',
+    template8: 'Node.js 库',
+    template9: 'Go 微服务',
+    template10: 'Rust 工具',
+    template11: '数据科学',
+    template12: 'Docker / DevOps',
+    template13: '移动应用 (Flutter)'
+};
+
+function renderContent(key, mode) {
+    const content = TEMPLATES[key];
+    if (!content) {
+        displayArea.innerHTML = '<div class="empty-state">模板不存在</div>';
+        return;
+    }
+    currentLabel.textContent = labelMap[key] || key;
+    displayArea.className = 'display-box ' + (mode === 'source' ? 'source' : 'preview');
+    if (mode === 'source') {
+        displayArea.textContent = content;
+    } else {
+        // 预览模式：使用 marked 渲染
+        try {
+            const html = marked.parse(content);
+            displayArea.innerHTML = html;
+        } catch (e) {
+            displayArea.textContent = content;
+        }
+    }
+}
+
+function setActiveNav(key) {
+    const items = navList.querySelectorAll('li');
+    items.forEach(li => {
+        li.classList.toggle('active', li.dataset.key === key);
+    });
+}
+
+// 点击导航
+navList.addEventListener('click', function(e) {
+    const li = e.target.closest('li');
+    if (!li) return;
+    const key = li.dataset.key;
+    if (key && TEMPLATES[key]) {
+        currentKey = key;
+        setActiveNav(key);
+        renderContent(key, currentMode);
+    }
+});
+
+// 切换模式
+modeSource.addEventListener('click', function() {
+    if (currentMode === 'source') return;
+    currentMode = 'source';
+    modeSource.classList.add('active');
+    modePreview.classList.remove('active');
+    renderContent(currentKey, currentMode);
+});
+modePreview.addEventListener('click', function() {
+    if (currentMode === 'preview') return;
+    currentMode = 'preview';
+    modePreview.classList.add('active');
+    modeSource.classList.remove('active');
+    renderContent(currentKey, currentMode);
+});
+
+// 复制（始终复制原始 Markdown）
+copyBtn.addEventListener('click', async function() {
+    const content = TEMPLATES[currentKey];
+    if (!content) return;
+    try {
+        await navigator.clipboard.writeText(content);
+        this.textContent = '✅ 已复制！';
+        this.classList.add('copied');
+        setTimeout(() => {
+            this.textContent = '📋 复制源码';
+            this.classList.remove('copied');
+        }, 2000);
+    } catch (err) {
+        // fallback
+        const textarea = document.createElement('textarea');
+        textarea.value = content;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        this.textContent = '✅ 已复制！';
+        setTimeout(() => {
+            this.textContent = '📋 复制源码';
+        }, 2000);
+    }
+});
+
+// 初始化
+setActiveNav('template1');
+renderContent('template1', 'source');
+</script>
+</body>
+</html>
